@@ -10,3 +10,4 @@ build/
 
 google-services.json
 key.properties
+node_modules
