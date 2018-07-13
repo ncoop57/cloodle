@@ -9,3 +9,4 @@ build/
 .flutter-plugins
 
 google-services.json
+key.properties
