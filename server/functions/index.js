@@ -37,7 +37,7 @@ exports.sendNotification = functions.https.onRequest((req, res) => {
 
   var options = {
     priority: "high",
-    timeToLive: 60 * 60 * 24
+    ttl: 60 * 60 * 24
   };
 
   admin

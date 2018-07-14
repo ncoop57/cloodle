@@ -9,6 +9,7 @@ import 'package:camera/camera.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cloodle/routes/camera_route.dart';
+import 'package:cloodle/routes/cloodle_route.dart';
 
 class LandingRoute extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -32,19 +33,15 @@ class LandingRouteState extends State<LandingRoute> {
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) {
         print("onMessage: ${message}");
-//         storageRef.child('images/stars.jpg').getDownloadURL().then(function(url) {
-//   // Get the download URL for 'images/stars.jpg'
-//   // This can be inserted into an <img> tag
-//   // This can also be downloaded directly
-// }).catch(function(error) {
-//   // Handle any errors
-// });
+        _handleNotification(message);
       },
       onResume: (Map<String, dynamic> message) {
         print("onResume: ${message}");
+        _handleNotification(message);
       },
       onLaunch: (Map<String, dynamic> message) {
         print("onLaunch: ${message}");
+        _handleNotification(message);
       },
     );
 
@@ -134,6 +131,28 @@ class LandingRouteState extends State<LandingRoute> {
         .document(user.uid)
         .setData(update);
   }
+
+  void _handleNotification(Map<String, dynamic> message) {
+    Navigator.of(context).push(
+      new MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          // String imageName = getValueFromMap(message, 'imageName');
+          return new CloodleRoute(imageName: message['imageName']);
+        },
+      ),
+    );
+  }
+
+  // dynamic getValueFromMap(Map<String, dynamic> map, String key) {
+  //   print(map);
+  //   var result;
+  //   map.forEach((k, value) {
+  //     if (k == key) {
+  //       result = value;
+  //     }
+  //   });
+  //   return result;
+  // }
 
   // void sendWelcomeNotification() async {
   //   var token = await _messaging.getToken();
