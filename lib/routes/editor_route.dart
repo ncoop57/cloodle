@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 
+import 'package:cloodle/routes/friends_route.dart';
+
 class EditorRoute extends StatefulWidget {
   final String imagePath;
 
@@ -35,17 +37,24 @@ class EditorRouteState extends State<EditorRoute> {
           new IconButton(
             icon: const Icon(Icons.wb_cloudy),
             color: Colors.blue,
-            onPressed: _handleSendCloodle,
+            onPressed: () => _handleSendCloodle(context),
           ),
         ],
       ),
     );
   }
 
-  void _handleSendCloodle() {
-    var ref = FirebaseStorage.instance
-        .ref()
-        .child("cloodles/" + basename(widget.imagePath));
-    ref.putFile(new File(widget.imagePath));
+  void _handleSendCloodle(BuildContext context) {
+    Navigator.of(context).push(
+      new MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return new FriendsRoute(imagePath: widget.imagePath);
+        },
+      ),
+    );
+    // var ref = FirebaseStorage.instance
+    //     .ref()
+    //     .child("cloodles/" + basename(widget.imagePath));
+    // ref.putFile(new File(widget.imagePath));
   }
 }

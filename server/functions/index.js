@@ -15,22 +15,24 @@ exports.sendNotification = functions.https.onRequest((req, res) => {
   const to = req.query.to;
   // const fromId = req.query.fromId;
   // const fromPushId = req.query.fromPushId;
-  // const fromName = req.query.fromName;
+  const fromName = req.query.fromName;
+  const imageName = req.query.imageName;
   // const type = req.query.type;
 
   var payload = {
     data: {
-      click_action: "FLUTTER_NOTIFICATION_CLICK"
+      click_action: "FLUTTER_NOTIFICATION_CLICK",
       // fromId: fromId,
       // fromPushId: fromPushId,
-      // fromName: fromName,
+      fromName: fromName,
+      imageName: imageName
       // type: type
     }
   };
 
   payload.notification = {
-    title: "Welcome to Cloodle!",
-    body: `Hi der! Hope you enjoy looking at clouds!`
+    title: "New Cloodle!",
+    body: `${fromName} sent you a cloodle! Check it out!`
   };
 
   var options = {

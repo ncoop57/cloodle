@@ -26,10 +26,19 @@ class LandingRouteState extends State<LandingRoute> {
   final FirebaseMessaging _messaging = new FirebaseMessaging();
   final GoogleSignIn googleSignIn = new GoogleSignIn();
 
+  @override
   void initState() {
+    super.initState();
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) {
         print("onMessage: ${message}");
+//         storageRef.child('images/stars.jpg').getDownloadURL().then(function(url) {
+//   // Get the download URL for 'images/stars.jpg'
+//   // This can be inserted into an <img> tag
+//   // This can also be downloaded directly
+// }).catch(function(error) {
+//   // Handle any errors
+// });
       },
       onResume: (Map<String, dynamic> message) {
         print("onResume: ${message}");
@@ -60,7 +69,14 @@ class LandingRouteState extends State<LandingRoute> {
                 onPressed: () =>
                     _handleSignIn(context).then((FirebaseUser user) {
                       saveUserToFirebase(user);
-                      sendWelcomeNotification();
+                      // sendWelcomeNotification();
+                      Navigator.of(context).push(
+                        new MaterialPageRoute<void>(
+                          builder: (BuildContext context) {
+                            return new CameraRoute(cameras: widget.cameras);
+                          },
+                        ),
+                      );
                     }).catchError((e) => print(e)),
                 child: new Text("Sign In With Google"),
                 color: Colors.red),
@@ -98,14 +114,6 @@ class LandingRouteState extends State<LandingRoute> {
     }
 
     return user;
-    // Navigator.of(context).push(
-    //   new MaterialPageRoute<void>(
-    //     // Add 20 lines from here...
-    //     builder: (BuildContext context) {
-    //       return new CameraRoute(cameras: cameras);
-    //     },
-    //   ),
-    // );
   }
 
   Future<void> saveUserToFirebase(FirebaseUser user) async {
@@ -127,11 +135,11 @@ class LandingRouteState extends State<LandingRoute> {
         .setData(update);
   }
 
-  void sendWelcomeNotification() async {
-    var token = await _messaging.getToken();
-    var base = 'https://us-central1-cloodle-v1.cloudfunctions.net/';
-    String dataURL = '$base/sendNotification?to=$token';
-    print(dataURL);
-    http.Response response = await http.get(dataURL);
-  }
+  // void sendWelcomeNotification() async {
+  //   var token = await _messaging.getToken();
+  //   var base = 'https://us-central1-cloodle-v1.cloudfunctions.net/';
+  //   String dataURL = '$base/sendNotification?to=$token';
+  //   print(dataURL);
+  //   http.Response response = await http.get(dataURL);
+  // }
 }
