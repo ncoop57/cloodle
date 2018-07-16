@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:firebase_storage/firebase_storage.dart';
 
+import 'package:cloodle/models/user.dart';
+
 class CloodleRoute extends StatelessWidget {
+  final _textController = new TextEditingController();
+  final User currentUser;
   final String imageName;
 
-  CloodleRoute({this.imageName});
+  CloodleRoute({this.imageName, this.currentUser});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +21,7 @@ class CloodleRoute extends StatelessWidget {
         children: [
           new Expanded(
             child: new Align(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               child: new FutureBuilder<dynamic>(
                 future: FirebaseStorage.instance
                     .ref()
@@ -42,13 +45,40 @@ class CloodleRoute extends StatelessWidget {
               ),
             ),
           ),
-          new IconButton(
-            icon: const Icon(Icons.wb_cloudy),
-            color: Colors.blue,
-            onPressed: () => print("Enter Answer"),
+          new Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              new Flexible(
+                child: new TextField(
+                  controller: _textController,
+                  decoration: InputDecoration(
+                    border: new OutlineInputBorder(
+                      borderRadius:
+                          const BorderRadius.all(const Radius.circular(32.0)),
+                    ),
+                    hintText: 'What do you see?',
+                    filled: true,
+                    fillColor: Colors.white,
+                  ),
+                ),
+              ),
+              new Container(
+                margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                child: new IconButton(
+                  icon: new Icon(Icons.send),
+                  onPressed: () => _handleSubmitted(context),
+                ),
+              )
+            ],
           ),
         ],
       ),
     );
+  }
+
+  void _handleSubmitted(BuildContext context) async {
+    if (_textController.text.isNotEmpty) {
+      Navigator.of(context).pop();
+    }
   }
 }

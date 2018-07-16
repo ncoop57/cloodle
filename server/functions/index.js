@@ -14,7 +14,7 @@ admin.initializeApp();
 exports.sendNotification = functions.https.onRequest((req, res) => {
   const to = req.query.to;
   // const fromId = req.query.fromId;
-  // const fromPushId = req.query.fromPushId;
+  const fromPushId = req.query.fromPushId;
   const fromName = req.query.fromName;
   const imageName = req.query.imageName;
   // const type = req.query.type;
@@ -22,8 +22,7 @@ exports.sendNotification = functions.https.onRequest((req, res) => {
   var payload = {
     data: {
       click_action: "FLUTTER_NOTIFICATION_CLICK",
-      // fromId: fromId,
-      // fromPushId: fromPushId,
+      fromPushId: fromPushId,
       fromName: fromName,
       imageName: imageName
       // type: type
@@ -32,7 +31,7 @@ exports.sendNotification = functions.https.onRequest((req, res) => {
 
   payload.notification = {
     title: "New Cloodle!",
-    body: `${fromName} sent you a cloodle! Check it out!`
+    body: `${fromName} sent you a cloodle. Check it out!`
   };
 
   var options = {

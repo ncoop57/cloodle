@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart';
 
 import 'package:cloodle/routes/friends_route.dart';
+import 'package:cloodle/models/user.dart';
 
 class EditorRoute extends StatefulWidget {
+  final User currentUser;
   final String imagePath;
 
-  EditorRoute({this.imagePath});
+  EditorRoute({this.imagePath, this.currentUser});
 
   @override
   EditorRouteState createState() {
@@ -48,13 +48,10 @@ class EditorRouteState extends State<EditorRoute> {
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          return new FriendsRoute(imagePath: widget.imagePath);
+          return new FriendsRoute(
+              imagePath: widget.imagePath, currentUser: widget.currentUser);
         },
       ),
     );
-    // var ref = FirebaseStorage.instance
-    //     .ref()
-    //     .child("cloodles/" + basename(widget.imagePath));
-    // ref.putFile(new File(widget.imagePath));
   }
 }

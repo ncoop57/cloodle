@@ -6,13 +6,15 @@ import 'package:path_provider/path_provider.dart';
 import 'package:camera/camera.dart';
 
 import 'package:cloodle/routes/editor_route.dart';
+import 'package:cloodle/routes/cloodles_route.dart';
 
 String timestamp() => new DateTime.now().millisecondsSinceEpoch.toString();
 
 class CameraRoute extends StatefulWidget {
   final List<CameraDescription> cameras;
+  final currentUser;
 
-  CameraRoute({this.cameras});
+  CameraRoute({this.cameras, this.currentUser});
 
   @override
   CameraRouteState createState() {
@@ -49,6 +51,24 @@ class CameraRouteState extends State<CameraRoute> {
       key: _scaffoldKey,
       appBar: new AppBar(
         title: const Text('Cloodle'),
+        actions: <Widget>[
+          new IconButton(
+            icon: const Icon(Icons.camera_alt),
+            color: Colors.blue,
+            onPressed: () {
+              Navigator.of(context).push(
+                new MaterialPageRoute<void>(
+                  // Add 20 lines from here...
+                  builder: (BuildContext context) {
+                    return CloodlesRoute(
+                      currentUser: widget.currentUser,
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       ),
       body: new Column(
         children: [
@@ -99,7 +119,8 @@ class CameraRouteState extends State<CameraRoute> {
           new MaterialPageRoute<void>(
             // Add 20 lines from here...
             builder: (BuildContext context) {
-              return EditorRoute(imagePath: imagePath);
+              return EditorRoute(
+                  imagePath: imagePath, currentUser: widget.currentUser);
             },
           ),
         );

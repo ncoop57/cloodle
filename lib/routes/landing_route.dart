@@ -6,10 +6,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:camera/camera.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:cloodle/routes/camera_route.dart';
 import 'package:cloodle/routes/cloodle_route.dart';
+import 'package:cloodle/models/user.dart';
 
 class LandingRoute extends StatefulWidget {
   final List<CameraDescription> cameras;
@@ -26,27 +26,37 @@ class LandingRouteState extends State<LandingRoute> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseMessaging _messaging = new FirebaseMessaging();
   final GoogleSignIn googleSignIn = new GoogleSignIn();
+  User currentUser;
 
   @override
   void initState() {
     super.initState();
     _messaging.configure(
       onMessage: (Map<String, dynamic> message) {
-        print("onMessage: ${message}");
-        _handleNotification(message);
+        print("onMessage: $message");
+        _handleSignIn(context).then((FirebaseUser user) {
+          saveUserToFirebase(user);
+          _handleNotification(message);
+        });
       },
       onResume: (Map<String, dynamic> message) {
-        print("onResume: ${message}");
-        _handleNotification(message);
+        print("onResume: $message");
+        _handleSignIn(context).then((FirebaseUser user) {
+          saveUserToFirebase(user);
+          _handleNotification(message);
+        });
       },
       onLaunch: (Map<String, dynamic> message) {
-        print("onLaunch: ${message}");
-        _handleNotification(message);
+        print("onLaunch: $message");
+        _handleSignIn(context).then((FirebaseUser user) {
+          saveUserToFirebase(user);
+          _handleNotification(message);
+        });
       },
     );
 
     _messaging.getToken().then((token) {
-      print("Token: ${token}");
+      print("Token: $token");
     });
   }
 
@@ -70,7 +80,9 @@ class LandingRouteState extends State<LandingRoute> {
                       Navigator.of(context).push(
                         new MaterialPageRoute<void>(
                           builder: (BuildContext context) {
-                            return new CameraRoute(cameras: widget.cameras);
+                            return new CameraRoute(
+                                cameras: widget.cameras,
+                                currentUser: currentUser);
                           },
                         ),
                       );
@@ -116,13 +128,19 @@ class LandingRouteState extends State<LandingRoute> {
   Future<void> saveUserToFirebase(FirebaseUser user) async {
     print('saving user to firebase');
     var token = await _messaging.getToken();
+    currentUser = new User(
+        name: user.displayName,
+        photo_url: user.photoUrl,
+        notification_token: token,
+        uid: user.uid);
 
     // await saveUserToPreferences(user.uid, user.displayName, token);
 
     var update = {
       "NAME": user.displayName,
       "PHOTO_URL": user.photoUrl,
-      "NOTIFICATION_TOKEN": token
+      "NOTIFICATION_TOKEN": token,
+      "UID": user.uid,
     };
     print(update);
 
@@ -133,32 +151,15 @@ class LandingRouteState extends State<LandingRoute> {
   }
 
   void _handleNotification(Map<String, dynamic> message) {
+    _handleSignIn(context);
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context) {
           // String imageName = getValueFromMap(message, 'imageName');
-          return new CloodleRoute(imageName: message['imageName']);
+          return new CloodleRoute(
+              imageName: message['imageName'], currentUser: currentUser);
         },
       ),
     );
   }
-
-  // dynamic getValueFromMap(Map<String, dynamic> map, String key) {
-  //   print(map);
-  //   var result;
-  //   map.forEach((k, value) {
-  //     if (k == key) {
-  //       result = value;
-  //     }
-  //   });
-  //   return result;
-  // }
-
-  // void sendWelcomeNotification() async {
-  //   var token = await _messaging.getToken();
-  //   var base = 'https://us-central1-cloodle-v1.cloudfunctions.net/';
-  //   String dataURL = '$base/sendNotification?to=$token';
-  //   print(dataURL);
-  //   http.Response response = await http.get(dataURL);
-  // }
 }
