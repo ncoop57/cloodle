@@ -10,6 +10,43 @@ admin.initializeApp();
 // exports.helloWorld = functions.https.onRequest((request, response) => {
 //   response.send("Hello from Firebase!");
 // });
+exports.sendNotification2 = functions.firestore
+  .document("sessions/{sessionID}")
+  .onUpdate((change, context) => {
+    // Get an object representing the document
+    // e.g. {'name': 'Marie', 'age': 66}
+    const newValue = change.after.data();
+
+    // access a particular field as you would any JS property
+    const to = newValue.FROM;
+    const from_name = newValue.TO_NAME;
+    const image_name = newValue.IMAGE_NAME;
+    const guess = newValue.GUESS;
+    // const type = req.query.type;
+
+    var payload = {
+      data: {
+        click_action: "FLUTTER_NOTIFICATION_CLICK",
+        from_name: from_name,
+        image_name: image_name,
+        type: "reply"
+      }
+    };
+
+    payload.notification = {
+      title: "Cloodle Reply!",
+      body: `${from_name} replied to a cloodle you sent. Check it out! ${guess}`
+    };
+
+    var options = {
+      priority: "high",
+      ttl: 60 * 60 * 24
+    };
+
+    return admin.messaging().sendToDevice(to, payload, options);
+
+    // perform desired operations ...
+  });
 
 exports.sendNotification = functions.https.onRequest((req, res) => {
   const to = req.query.to;
@@ -24,8 +61,8 @@ exports.sendNotification = functions.https.onRequest((req, res) => {
       click_action: "FLUTTER_NOTIFICATION_CLICK",
       fromPushId: fromPushId,
       fromName: fromName,
-      imageName: imageName
-      // type: type
+      imageName: imageName,
+      type: "challenge"
     }
   };
 

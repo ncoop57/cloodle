@@ -93,33 +93,26 @@ class CloodleRoute extends StatelessWidget {
       //   http.Response response = await http.get(dataURL);
       // });
       print('Answered');
+      _updateSessionToFireBase();
 
       Navigator.of(context).pop();
     }
   }
 
-  // Future<void> _updateSessionToFireBase() async {
-  //   var session = {
-  //     "FROM": this.session.from,
-  //     "FROM_NAME": this.session.from_name,
-  //     "TO": this.session.to,
-  //     "GUESS": _textController.text,
-  //     "ANSWER": "",
-  //     "IMAGE_NAME": this.session.image_name,
-  //   };
+  Future<void> _updateSessionToFireBase() async {
+    var session = {
+      "FROM": this.session.from,
+      "FROM_NAME": this.session.from_name,
+      "TO": this.session.to,
+      "TO_NAME": this.session.to_name,
+      "GUESS": _textController.text,
+      "ANSWER": "",
+      "IMAGE_NAME": this.session.image_name,
+    };
 
-  //   Firestore.instance
-  //       .collection('users')
-  //       .document(this.session.from)
-  //       .collection("sessions")
-  //       .document(this.session.session_id)
-  //       .setData(session);
-
-  //   return Firestore.instance
-  //       .collection('users')
-  //       .document(this.session.to)
-  //       .collection("sessions")
-  //       .document()
-  //       .setData(session);
-  // }
+    return Firestore.instance
+        .collection("sessions")
+        .document(this.session.session_id)
+        .setData(session);
+  }
 }
