@@ -40,8 +40,10 @@ class UserTile extends StatelessWidget {
       var base =
           'https://us-central1-cloodle-v1.cloudfunctions.net/sendNotification';
 
-      String dataURL =
-          '$base?to=${this.toUser.notification_token}&fromPushId=${fromUser.notification_token}&fromName=${fromUser.name}&imageName=$imageName';
+      String dataURL = '$base?to=${this.toUser.notification_token}' +
+          '&fromPushId=${fromUser.notification_token}' +
+          '&fromName=${fromUser.name}' +
+          '&imageName=$imageName';
       dataURL = Uri.encodeFull(dataURL);
       print(dataURL);
       http.Response response = await http.get(dataURL);
@@ -59,24 +61,13 @@ class UserTile extends StatelessWidget {
       "FROM": fromUser.notification_token,
       "FROM_NAME": fromUser.name,
       "TO": toUser.notification_token,
+      "TO_NAME": toUser.name,
       "GUESS": "",
       "ANSWER": "",
       "IMAGE_NAME": imageName,
     };
     print(session);
 
-    Firestore.instance
-        .collection('users')
-        .document(fromUser.uid)
-        .collection("sessions")
-        .document()
-        .setData(session);
-
-    Firestore.instance
-        .collection('users')
-        .document(toUser.uid)
-        .collection("sessions")
-        .document()
-        .setData(session);
+    Firestore.instance.collection('sessions').document().setData(session);
   }
 }

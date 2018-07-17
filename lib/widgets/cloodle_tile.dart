@@ -7,21 +7,39 @@ import 'package:path/path.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:cloodle/routes/cloodle_route.dart';
-import 'package:cloodle/models/user.dart';
+import 'package:cloodle/models/session.dart';
 
 class CloodleTile extends StatelessWidget {
-  final String session_id;
-  final String from;
-  final String from_name;
-  final String image_name;
+  final Session session;
 
-  CloodleTile({this.session_id, this.from, this.from_name, this.image_name});
+  CloodleTile({
+    this.session,
+  });
 
   @override
   Widget build(BuildContext context) {
     return new ListTile(
       title: new Text(
-        from_name,
+        this.session.from_name,
+      ),
+      leading: new FutureBuilder<dynamic>(
+        future: FirebaseStorage.instance
+            .ref()
+            .child('cloodles/${this.session.image_name}')
+            .getDownloadURL(), // a Future<String> or null
+        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return new Container();
+            case ConnectionState.waiting:
+              return new Container();
+            default:
+              if (snapshot.hasError)
+                return new Text('Error: ${snapshot.error}');
+              else
+                return new Image.network(snapshot.data);
+          }
+        },
       ),
       onTap: () => _handleCloodle(context),
     );
@@ -29,24 +47,13 @@ class CloodleTile extends StatelessWidget {
 
   void _handleCloodle(BuildContext context) {
     print("You clicked a cloodle!");
-
-    // var imageName = basename(imagePath);
-    // saveCloodleSessionToFirebase(imageName);
-    // var ref = FirebaseStorage.instance.ref().child("cloodles/" + imageName);
-    // StorageUploadTask putFile = ref.putFile(new File(imagePath));
-    // putFile.future.then((UploadTaskSnapshot upload) async {
-    //   print("file uploaded");
-    //   var base =
-    //       'https://us-central1-cloodle-v1.cloudfunctions.net/sendNotification';
-
-    //   String dataURL =
-    //       '$base?to=${this.toUser.notification_token}&fromPushId=${fromUser.notification_token}&fromName=${fromUser.name}&imageName=$imageName';
-    //   dataURL = Uri.encodeFull(dataURL);
-    //   print(dataURL);
-    //   http.Response response = await http.get(dataURL);
-    // });
-
-    // Navigator.pop(context);
+    Navigator.of(context).push(
+      new MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return new CloodleRoute(session: this.session);
+        },
+      ),
+    );
   }
 
   // void saveCloodleSessionToFirebase(String imageName) async {

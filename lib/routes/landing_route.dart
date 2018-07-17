@@ -8,7 +8,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:camera/camera.dart';
 
 import 'package:cloodle/routes/camera_route.dart';
-import 'package:cloodle/routes/cloodle_route.dart';
+import 'package:cloodle/routes/cloodles_list_route.dart';
 import 'package:cloodle/models/user.dart';
 
 class LandingRoute extends StatefulWidget {
@@ -155,9 +155,7 @@ class LandingRouteState extends State<LandingRoute> {
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          // String imageName = getValueFromMap(message, 'imageName');
-          return new CloodleRoute(
-              imageName: message['imageName'], currentUser: currentUser);
+          return new CloodlesListRoute(currentUser: currentUser);
         },
       ),
     );

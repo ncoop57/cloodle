@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:camera/camera.dart';
 
 import 'package:cloodle/routes/editor_route.dart';
-import 'package:cloodle/routes/cloodles_route.dart';
+import 'package:cloodle/routes/cloodles_list_route.dart';
 
 String timestamp() => new DateTime.now().millisecondsSinceEpoch.toString();
 
@@ -53,14 +53,14 @@ class CameraRouteState extends State<CameraRoute> {
         title: const Text('Cloodle'),
         actions: <Widget>[
           new IconButton(
-            icon: const Icon(Icons.camera_alt),
-            color: Colors.blue,
+            icon: const Icon(Icons.list),
+            color: Colors.white,
             onPressed: () {
               Navigator.of(context).push(
                 new MaterialPageRoute<void>(
                   // Add 20 lines from here...
                   builder: (BuildContext context) {
-                    return CloodlesRoute(
+                    return CloodlesListRoute(
                       currentUser: widget.currentUser,
                     );
                   },

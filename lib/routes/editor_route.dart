@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:cloodle/routes/friends_route.dart';
+import 'package:cloodle/routes/friends_list_route.dart';
 import 'package:cloodle/models/user.dart';
 
 class EditorRoute extends StatefulWidget {
@@ -48,7 +48,7 @@ class EditorRouteState extends State<EditorRoute> {
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          return new FriendsRoute(
+          return new FriendsListRoute(
               imagePath: widget.imagePath, currentUser: widget.currentUser);
         },
       ),

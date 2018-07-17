@@ -1,18 +1,19 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 
-import 'package:cloodle/models/user.dart';
+import 'package:cloodle/models/session.dart';
 
 class CloodleRoute extends StatelessWidget {
   final _textController = new TextEditingController();
-  final User currentUser;
-  final String imageName;
+  final Session session;
 
-  CloodleRoute({this.imageName, this.currentUser});
+  CloodleRoute({this.session});
 
   @override
   Widget build(BuildContext context) {
-    // return new Container();
     return new Scaffold(
       appBar: new AppBar(
         title: const Text('Cloodle Quiz'),
@@ -25,8 +26,8 @@ class CloodleRoute extends StatelessWidget {
               child: new FutureBuilder<dynamic>(
                 future: FirebaseStorage.instance
                     .ref()
-                    .child('cloodles/$imageName')
-                    .getDownloadURL(), // a Future<String> or null
+                    .child('cloodles/${this.session.image_name}')
+                    .getDownloadURL(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
                   switch (snapshot.connectionState) {
@@ -78,7 +79,47 @@ class CloodleRoute extends StatelessWidget {
 
   void _handleSubmitted(BuildContext context) async {
     if (_textController.text.isNotEmpty) {
+      // _updateSessionToFireBase().then((onValue) async {
+      //   var base =
+      //       'https://us-central1-cloodle-v1.cloudfunctions.net/sendNotification';
+
+      //   String dataURL = '$base?to=${this.session.from}' +
+      //       '&fromPushId=${this.session.to}' +
+      //       '&fromName=${this.session.to_name}' +
+      //       '&imageName=${this.session.image_name}' +
+      //       '&type=reply';
+      //   dataURL = Uri.encodeFull(dataURL);
+      //   print(dataURL);
+      //   http.Response response = await http.get(dataURL);
+      // });
+      print('Answered');
+
       Navigator.of(context).pop();
     }
   }
+
+  // Future<void> _updateSessionToFireBase() async {
+  //   var session = {
+  //     "FROM": this.session.from,
+  //     "FROM_NAME": this.session.from_name,
+  //     "TO": this.session.to,
+  //     "GUESS": _textController.text,
+  //     "ANSWER": "",
+  //     "IMAGE_NAME": this.session.image_name,
+  //   };
+
+  //   Firestore.instance
+  //       .collection('users')
+  //       .document(this.session.from)
+  //       .collection("sessions")
+  //       .document(this.session.session_id)
+  //       .setData(session);
+
+  //   return Firestore.instance
+  //       .collection('users')
+  //       .document(this.session.to)
+  //       .collection("sessions")
+  //       .document()
+  //       .setData(session);
+  // }
 }
