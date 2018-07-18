@@ -11,16 +11,18 @@ import 'package:cloodle/models/session.dart';
 
 class CloodleTile extends StatelessWidget {
   final Session session;
+  final String type;
 
   CloodleTile({
     this.session,
+    this.type,
   });
 
   @override
   Widget build(BuildContext context) {
     return new ListTile(
       title: new Text(
-        this.session.from_name,
+        (this.type == "TO") ? this.session.from_name : this.session.to_name,
       ),
       leading: new FutureBuilder<dynamic>(
         future: FirebaseStorage.instance
@@ -50,7 +52,7 @@ class CloodleTile extends StatelessWidget {
     Navigator.of(context).push(
       new MaterialPageRoute<void>(
         builder: (BuildContext context) {
-          return new CloodleRoute(session: this.session);
+          return new CloodleRoute(session: this.session, type: this.type);
         },
       ),
     );

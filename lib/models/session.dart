@@ -5,6 +5,8 @@ class Session {
   final String to;
   final String to_name;
   final String image_name;
+  final String guess;
+  final int answer;
 
   Session({
     this.session_id,
@@ -13,5 +15,7 @@ class Session {
     this.to,
     this.to_name,
     this.image_name,
+    this.guess,
+    this.answer,
   });
 }

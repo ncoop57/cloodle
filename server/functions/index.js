@@ -19,10 +19,12 @@ exports.sendNotification2 = functions.firestore
 
     // access a particular field as you would any JS property
     const to = newValue.FROM;
+    const to_name = newValue.FROM_NAME;
+    const from = newValue.TO;
     const from_name = newValue.TO_NAME;
     const image_name = newValue.IMAGE_NAME;
     const guess = newValue.GUESS;
-    // const type = req.query.type;
+    const answer = newValue.ANSWER;
 
     var payload = {
       data: {
@@ -33,19 +35,26 @@ exports.sendNotification2 = functions.firestore
       }
     };
 
-    payload.notification = {
-      title: "Cloodle Reply!",
-      body: `${from_name} replied to a cloodle you sent. Check it out! ${guess}`
-    };
-
     var options = {
       priority: "high",
       ttl: 60 * 60 * 24
     };
 
-    return admin.messaging().sendToDevice(to, payload, options);
+    if (answer == 0) {
+      payload.notification = {
+        title: "Cloodle Answer!",
+        body: `${from_name} replied to a cloodle you sent. Check it out! ${guess}`
+      };
 
-    // perform desired operations ...
+      return admin.messaging().sendToDevice(to, payload, options);
+    } else {
+      payload.notification = {
+        title: "Cloodle Reply!",
+        body: `${to_name} said you got it ${answer == 1 ? "right" : "wrong"}.`
+      };
+
+      return admin.messaging().sendToDevice(from, payload, options);
+    }
   });
 
 exports.sendNotification = functions.https.onRequest((req, res) => {

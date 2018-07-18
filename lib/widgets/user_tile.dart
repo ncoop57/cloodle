@@ -63,7 +63,7 @@ class UserTile extends StatelessWidget {
       "TO": toUser.notification_token,
       "TO_NAME": toUser.name,
       "GUESS": "",
-      "ANSWER": "",
+      "ANSWER": 0,
       "IMAGE_NAME": imageName,
     };
     print(session);

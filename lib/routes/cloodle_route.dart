@@ -9,8 +9,9 @@ import 'package:cloodle/models/session.dart';
 class CloodleRoute extends StatelessWidget {
   final _textController = new TextEditingController();
   final Session session;
+  final String type;
 
-  CloodleRoute({this.session});
+  CloodleRoute({this.session, this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -46,67 +47,98 @@ class CloodleRoute extends StatelessWidget {
               ),
             ),
           ),
-          new Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              new Flexible(
-                child: new TextField(
-                  controller: _textController,
-                  decoration: InputDecoration(
-                    border: new OutlineInputBorder(
-                      borderRadius:
-                          const BorderRadius.all(const Radius.circular(32.0)),
-                    ),
-                    hintText: 'What do you see?',
-                    filled: true,
-                    fillColor: Colors.white,
-                  ),
-                ),
-              ),
-              new Container(
-                margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                child: new IconButton(
-                  icon: new Icon(Icons.send),
-                  onPressed: () => _handleSubmitted(context),
-                ),
-              )
-            ],
-          ),
+          (this.type == "TO")
+              ? (this.session.answer == 0)
+                  ? _buildQuiz(context)
+                  : new Text(
+                      "YOU GOT IT ${(this.session.answer == -1) ? "WRONG" : "RIGHT"}!")
+              : (this.session.guess == "")
+                  ? new Text(
+                      "${this.session.to_name} has not made a guess yet.")
+                  : _buildAnswer(context),
         ],
       ),
     );
   }
 
-  void _handleSubmitted(BuildContext context) async {
-    if (_textController.text.isNotEmpty) {
-      // _updateSessionToFireBase().then((onValue) async {
-      //   var base =
-      //       'https://us-central1-cloodle-v1.cloudfunctions.net/sendNotification';
+  Widget _buildQuiz(BuildContext context) {
+    return new Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        new Flexible(
+          child: new TextField(
+            controller: _textController,
+            decoration: InputDecoration(
+              border: new OutlineInputBorder(
+                borderRadius:
+                    const BorderRadius.all(const Radius.circular(32.0)),
+              ),
+              hintText: 'What do you see?',
+              filled: true,
+              fillColor: Colors.white,
+            ),
+          ),
+        ),
+        new Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+          child: new IconButton(
+            icon: new Icon(Icons.send),
+            onPressed: () => _handleSubmitted(context),
+          ),
+        )
+      ],
+    );
+  }
 
-      //   String dataURL = '$base?to=${this.session.from}' +
-      //       '&fromPushId=${this.session.to}' +
-      //       '&fromName=${this.session.to_name}' +
-      //       '&imageName=${this.session.image_name}' +
-      //       '&type=reply';
-      //   dataURL = Uri.encodeFull(dataURL);
-      //   print(dataURL);
-      //   http.Response response = await http.get(dataURL);
-      // });
+  Widget _buildAnswer(BuildContext context) {
+    return new Row(
+      children: <Widget>[
+        new Expanded(
+          child: new Text(
+              "${this.session.to_name} guessed: ${this.session.guess}. Are they correct?"),
+        ),
+        (this.session.answer != 0)
+            ? new Text(
+                "You said ${(this.session.answer == 1) ? "correct" : "incorrect"}!")
+            : new Row(
+                children: [
+                  new IconButton(
+                    icon: new Icon(
+                      Icons.check,
+                      color: Colors.green,
+                    ),
+                    onPressed: () => _updateSessionToFireBase(1),
+                  ),
+                  new IconButton(
+                    icon: new Icon(
+                      Icons.clear,
+                      color: Colors.red,
+                    ),
+                    onPressed: () => _updateSessionToFireBase(-1),
+                  ),
+                ],
+              ),
+      ],
+    );
+  }
+
+  void _handleSubmitted(BuildContext context) {
+    if (_textController.text.isNotEmpty) {
       print('Answered');
-      _updateSessionToFireBase();
+      _updateSessionToFireBase(0);
 
       Navigator.of(context).pop();
     }
   }
 
-  Future<void> _updateSessionToFireBase() async {
+  Future<void> _updateSessionToFireBase(int answer) async {
     var session = {
       "FROM": this.session.from,
       "FROM_NAME": this.session.from_name,
       "TO": this.session.to,
       "TO_NAME": this.session.to_name,
-      "GUESS": _textController.text,
-      "ANSWER": "",
+      "GUESS": (answer == 0) ? _textController.text : this.session.guess,
+      "ANSWER": answer,
       "IMAGE_NAME": this.session.image_name,
     };
 
