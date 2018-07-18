@@ -20,30 +20,37 @@ class CloodleTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new ListTile(
-      title: new Text(
-        (this.type == "TO") ? this.session.from_name : this.session.to_name,
+    return new Container(
+      decoration: new BoxDecoration(
+        color: (this.session.answer == 0)
+            ? Colors.white
+            : (this.session.answer == 1) ? Colors.green : Colors.red,
       ),
-      leading: new FutureBuilder<dynamic>(
-        future: FirebaseStorage.instance
-            .ref()
-            .child('cloodles/${this.session.image_name}')
-            .getDownloadURL(), // a Future<String> or null
-        builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-          switch (snapshot.connectionState) {
-            case ConnectionState.none:
-              return new Container();
-            case ConnectionState.waiting:
-              return new Container();
-            default:
-              if (snapshot.hasError)
-                return new Text('Error: ${snapshot.error}');
-              else
-                return new Image.network(snapshot.data);
-          }
-        },
+      child: new ListTile(
+        title: new Text(
+          (this.type == "TO") ? this.session.from_name : this.session.to_name,
+        ),
+        leading: new FutureBuilder<dynamic>(
+          future: FirebaseStorage.instance
+              .ref()
+              .child('cloodles/${this.session.image_name}')
+              .getDownloadURL(), // a Future<String> or null
+          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+            switch (snapshot.connectionState) {
+              case ConnectionState.none:
+                return new Container();
+              case ConnectionState.waiting:
+                return new Container();
+              default:
+                if (snapshot.hasError)
+                  return new Text('Error: ${snapshot.error}');
+                else
+                  return new Image.network(snapshot.data);
+            }
+          },
+        ),
+        onTap: () => _handleCloodle(context),
       ),
-      onTap: () => _handleCloodle(context),
     );
   }
 
