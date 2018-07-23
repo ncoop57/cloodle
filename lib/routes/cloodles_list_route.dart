@@ -45,7 +45,7 @@ class CloodlesListRoute extends StatelessWidget {
   Widget _displayCloodlesList(String condition) {
     var _db = Firestore.instance
         .collection("sessions")
-        .where(condition, isEqualTo: currentUser.notification_token);
+        .where(condition, isEqualTo: currentUser.notificationToken);
     return new StreamBuilder(
       stream: _db.snapshots(),
       builder: (context, snapshot) {
@@ -58,12 +58,12 @@ class CloodlesListRoute extends StatelessWidget {
             reverse: false,
             itemBuilder: (_, int index) => new CloodleTile(
                   session: new Session(
-                    session_id: sessions[index].documentID,
+                    sessionId: sessions[index].documentID,
                     from: sessions[index]['FROM'],
-                    from_name: sessions[index]['FROM_NAME'],
+                    fromName: sessions[index]['FROM_NAME'],
                     to: sessions[index]['TO'],
-                    to_name: sessions[index]['TO_NAME'],
-                    image_name: sessions[index]['IMAGE_NAME'],
+                    toName: sessions[index]['TO_NAME'],
+                    imageName: sessions[index]['IMAGE_NAME'],
                     guess: sessions[index]['GUESS'],
                     answer: sessions[index]['ANSWER'],
                   ),

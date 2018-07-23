@@ -39,8 +39,8 @@ class FriendsListRoute extends StatelessWidget {
             itemBuilder: (_, int index) => new UserTile(
                   toUser: new User(
                     name: users[index]['NAME'],
-                    photo_url: users[index]['PHOTO_URL'],
-                    notification_token: users[index]['NOTIFICATION_TOKEN'],
+                    photoUrl: users[index]['PHOTO_URL'],
+                    notificationToken: users[index]['NOTIFICATION_TOKEN'],
                     uid: users[index]['UID'],
                   ),
                   fromUser: currentUser,

@@ -1,10 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:path/path.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:cloodle/routes/cloodle_route.dart';
 import 'package:cloodle/models/session.dart';
@@ -28,12 +23,12 @@ class CloodleTile extends StatelessWidget {
       ),
       child: new ListTile(
         title: new Text(
-          (this.type == "TO") ? this.session.from_name : this.session.to_name,
+          (this.type == "TO") ? this.session.fromName : this.session.toName,
         ),
         leading: new FutureBuilder<dynamic>(
           future: FirebaseStorage.instance
               .ref()
-              .child('cloodles/${this.session.image_name}')
+              .child('cloodles/${this.session.imageName}')
               .getDownloadURL(), // a Future<String> or null
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             switch (snapshot.connectionState) {

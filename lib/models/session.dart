@@ -1,20 +1,20 @@
 class Session {
-  final String session_id;
+  final String sessionId;
   final String from;
-  final String from_name;
+  final String fromName;
   final String to;
-  final String to_name;
-  final String image_name;
+  final String toName;
+  final String imageName;
   final String guess;
   final int answer;
 
   Session({
-    this.session_id,
+    this.sessionId,
     this.from,
-    this.from_name,
+    this.fromName,
     this.to,
-    this.to_name,
-    this.image_name,
+    this.toName,
+    this.imageName,
     this.guess,
     this.answer,
   });

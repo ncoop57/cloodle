@@ -27,7 +27,7 @@ class CloodleRoute extends StatelessWidget {
               child: new FutureBuilder<dynamic>(
                 future: FirebaseStorage.instance
                     .ref()
-                    .child('cloodles/${this.session.image_name}')
+                    .child('cloodles/${this.session.imageName}')
                     .getDownloadURL(),
                 builder:
                     (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
@@ -53,8 +53,7 @@ class CloodleRoute extends StatelessWidget {
                   : new Text(
                       "YOU GOT IT ${(this.session.answer == -1) ? "WRONG" : "RIGHT"}!")
               : (this.session.guess == "")
-                  ? new Text(
-                      "${this.session.to_name} has not made a guess yet.")
+                  ? new Text("${this.session.toName} has not made a guess yet.")
                   : _buildAnswer(context),
         ],
       ),
@@ -95,7 +94,7 @@ class CloodleRoute extends StatelessWidget {
       children: <Widget>[
         new Expanded(
           child: new Text(
-              "${this.session.to_name} guessed: ${this.session.guess}. Are they correct?"),
+              "${this.session.toName} guessed: ${this.session.guess}. Are they correct?"),
         ),
         (this.session.answer != 0)
             ? new Text(
@@ -134,17 +133,17 @@ class CloodleRoute extends StatelessWidget {
   Future<void> _updateSessionToFireBase(int answer) async {
     var session = {
       "FROM": this.session.from,
-      "FROM_NAME": this.session.from_name,
+      "FROM_NAME": this.session.fromName,
       "TO": this.session.to,
-      "TO_NAME": this.session.to_name,
+      "TO_NAME": this.session.toName,
       "GUESS": (answer == 0) ? _textController.text : this.session.guess,
       "ANSWER": answer,
-      "IMAGE_NAME": this.session.image_name,
+      "IMAGE_NAME": this.session.imageName,
     };
 
     return Firestore.instance
         .collection("sessions")
-        .document(this.session.session_id)
+        .document(this.session.sessionId)
         .setData(session);
   }
 }

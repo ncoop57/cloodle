@@ -130,8 +130,8 @@ class LandingRouteState extends State<LandingRoute> {
     var token = await _messaging.getToken();
     currentUser = new User(
         name: user.displayName,
-        photo_url: user.photoUrl,
-        notification_token: token,
+        photoUrl: user.photoUrl,
+        notificationToken: token,
         uid: user.uid);
 
     // await saveUserToPreferences(user.uid, user.displayName, token);

@@ -22,7 +22,7 @@ class UserTile extends StatelessWidget {
         toUser.name,
       ),
       leading: new Image.network(
-        toUser.photo_url,
+        toUser.photoUrl,
       ),
       onTap: () => _handleSendCloodle(context),
     );
@@ -40,13 +40,13 @@ class UserTile extends StatelessWidget {
       var base =
           'https://us-central1-cloodle-v1.cloudfunctions.net/sendNotification';
 
-      String dataURL = '$base?to=${this.toUser.notification_token}' +
-          '&fromPushId=${fromUser.notification_token}' +
+      String dataURL = '$base?to=${this.toUser.notificationToken}' +
+          '&fromPushId=${fromUser.notificationToken}' +
           '&fromName=${fromUser.name}' +
           '&imageName=$imageName';
       dataURL = Uri.encodeFull(dataURL);
       print(dataURL);
-      http.Response response = await http.get(dataURL);
+      await http.get(dataURL);
     });
 
     Navigator.pop(context);
@@ -58,9 +58,9 @@ class UserTile extends StatelessWidget {
     // await saveUserToPreferences(user.uid, user.displayName, token);
 
     var session = {
-      "FROM": fromUser.notification_token,
+      "FROM": fromUser.notificationToken,
       "FROM_NAME": fromUser.name,
-      "TO": toUser.notification_token,
+      "TO": toUser.notificationToken,
       "TO_NAME": toUser.name,
       "GUESS": "",
       "ANSWER": 0,
