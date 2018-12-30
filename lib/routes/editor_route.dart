@@ -25,7 +25,7 @@ class EditorRouteState extends State<EditorRoute>
     with TickerProviderStateMixin {
   AnimationController controller;
   List<Offset> points = <Offset>[];
-  Color color = Colors.black;
+  Color color = Colors.blue;
   StrokeCap strokeCap = StrokeCap.round;
   double strokeWidth = 5.0;
   List<CloodlePainter> painters = <CloodlePainter>[];
@@ -68,17 +68,7 @@ class EditorRouteState extends State<EditorRoute>
             });
           },
           onPanEnd: (DragEndDetails details) => points.add(null),
-          child:
-              // CustomPaint(
-              //   painter: CloodlePainter(
-              //       points: points,
-              //       color: color,
-              //       strokeCap: strokeCap,
-              //       strokeWidth: strokeWidth,
-              //       painters: painters),
-              //   size: Size.infinite,
-              // ),
-              new FutureBuilder<ui.Image>(
+          child: new FutureBuilder<ui.Image>(
             future: this.cloodle,
             builder: (BuildContext context, AsyncSnapshot<ui.Image> snapshot) {
               switch (snapshot.connectionState) {
@@ -92,6 +82,7 @@ class EditorRouteState extends State<EditorRoute>
                     // that actually makes the CustomPaint etc
                     return CustomPaint(
                       painter: CloodlePainter(
+                          image: snapshot.data,
                           points: points,
                           color: color,
                           strokeCap: strokeCap,

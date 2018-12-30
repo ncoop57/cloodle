@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 
 class CloodlePainter extends CustomPainter {
+  ui.Image image;
   List<Offset> points;
   Color color;
   StrokeCap strokeCap;
@@ -10,7 +11,8 @@ class CloodlePainter extends CustomPainter {
   List<CloodlePainter> painters;
 
   CloodlePainter(
-      {this.points,
+      {this.image,
+      this.points,
       this.color,
       this.strokeCap,
       this.strokeWidth,
@@ -18,6 +20,14 @@ class CloodlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // paintImage(
+    //     canvas: canvas,
+    //     rect: const Offset(0, 0) & const Size(411.4, 683.4),
+    //     image: this.image);
+    // size.center(Offset.zero)
+    // double height = this.image.height;
+    paintImage(canvas: canvas, rect: Offset.zero & size, image: this.image);
+
     for (CloodlePainter painter in painters) {
       painter.paint(canvas, size);
     }
