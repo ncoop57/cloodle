@@ -20,13 +20,8 @@ class CloodlePainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    // paintImage(
-    //     canvas: canvas,
-    //     rect: const Offset(0, 0) & const Size(411.4, 683.4),
-    //     image: this.image);
-    // size.center(Offset.zero)
-    // double height = this.image.height;
-    paintImage(canvas: canvas, rect: Offset.zero & size, image: this.image);
+    if (this.image != null)
+      paintImage(canvas: canvas, rect: Offset.zero & size, image: this.image);
 
     for (CloodlePainter painter in painters) {
       painter.paint(canvas, size);
@@ -35,7 +30,7 @@ class CloodlePainter extends CustomPainter {
     print("Painting....");
 
     Paint paint = new Paint();
-    paint.color = color;
+    paint.color = this.color;
     paint.strokeCap = strokeCap;
     paint.strokeWidth = strokeWidth;
     for (int i = 0; i < points.length - 1; i++) {
